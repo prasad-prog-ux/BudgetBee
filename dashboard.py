@@ -55,23 +55,28 @@ sidebar.pack(side="left", fill="y")
 ctk.CTkLabel(sidebar, text="SmartFinance 💸", font=title_font, text_color="#06923E").pack(pady=20)
 # 👇 Put this AFTER root = ctk.CTk() and sidebar setup
 
-goal_label = ctk.CTkLabel(root, text="🎯 Goals: 0", font=card_font, text_color="#045B27")
-goal_label.place(x=250, y=80)
+# === Header Cards ===
+header = ctk.CTkFrame(root, fg_color="#D3ECCD")  # Light green header background
+header.pack(fill="x", padx=30, pady=10)
 
-fund_label = ctk.CTkLabel(root, text="💰 Funds: ₹0", font=card_font, text_color="#045B27")
-fund_label.place(x=250, y=120)
 
-sub_label = ctk.CTkLabel(root, text="📦 Subscriptions: 0", font=card_font, text_color="#045B27")
-sub_label.place(x=250, y=160)
-# ✅ Missing Labels Added Now
-total_balance_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#045B27")
-total_balance_label.place(x=250, y=200)
+# === Header Card Creator ===
+def create_card(parent, title, amount, color):
+    card = ctk.CTkFrame(parent, fg_color=color, width=250, height=80, corner_radius=10)
+    card.pack(side="left", padx=15)
+    ctk.CTkLabel(card, text=title, font=card_font, text_color="white").pack(anchor="w", padx=10, pady=5)
+    label = ctk.CTkLabel(card, text=f"₹ {amount}", font=card_font, text_color="white")
+    label.pack(anchor="w", padx=10)
+    return label  # ✅ Return for updating later
 
-monthly_expense_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#8B0000")
-monthly_expense_label.place(x=250, y=240)
 
-savings_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#006400")
-savings_label.place(x=250, y=280)
+total_balance_label = create_card(header, "Total Balance", "0", "#045B27")       # Dark green
+monthly_expense_label = create_card(header, "Monthly Expenses", "0", "#D64545")  # Red
+savings_label = create_card(header, "Savings", "0", "#06923E")                   # Primary green
+
+
+
+
 
 # === Charts Setup ===
 fig1 = plt.Figure(figsize=(3.8, 2.2), dpi=100)
@@ -89,7 +94,29 @@ ax3 = fig3.add_subplot(111)
 canvas3 = FigureCanvasTkAgg(fig3, master=root)
 canvas3.get_tk_widget().place(x=700, y=580)
 
+# === Graph Section (Dynamic) ===
+chart_area = ctk.CTkFrame(root, fg_color="#D3ECCD")
+chart_area.pack(fill="both", expand=True, padx=20, pady=10)
 
+
+fund_label = ctk.CTkLabel(root, text="💰 Funds: ₹0", font=card_font, text_color="#045B27")
+fund_label.lift()
+fund_label.place(x=280, y=120)
+
+sub_label = ctk.CTkLabel(root, text="📦 Subscriptions: 0", font=card_font, text_color="#045B27")
+sub_label.place(x=280, y=160)
+
+goal_label = ctk.CTkLabel(root, text="🎯 Goals: 0", font=card_font, text_color="#045B27")
+goal_label.place(x=280, y=200)
+# ✅ Missing Labels Added Now
+# total_balance_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#045B27")
+# total_balance_label.place(x=250, y=200)
+
+# monthly_expense_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#8B0000")
+# monthly_expense_label.place(x=250, y=240)
+
+# savings_label = ctk.CTkLabel(root, text="₹ 0", font=card_font, text_color="#006400")
+# savings_label.place(x=250, y=280)
 
 
 # === Emergency Fund Tracker Window (Theme Matched) ===
@@ -1142,28 +1169,28 @@ ctk.CTkButton(
     command=root.destroy
 ).pack(side="bottom", pady=20, padx=10)
 
-# === Header Cards ===
-header = ctk.CTkFrame(root, fg_color="#D3ECCD")  # Light green header background
-header.pack(fill="x", padx=30, pady=10)
+# # === Header Cards ===
+# header = ctk.CTkFrame(root, fg_color="#D3ECCD")  # Light green header background
+# header.pack(fill="x", padx=30, pady=10)
 
 
-# === Header Card Creator ===
-def create_card(parent, title, amount, color):
-    card = ctk.CTkFrame(parent, fg_color=color, width=250, height=80, corner_radius=10)
-    card.pack(side="left", padx=15)
-    ctk.CTkLabel(card, text=title, font=card_font, text_color="white").pack(anchor="w", padx=10, pady=5)
-    label = ctk.CTkLabel(card, text=f"₹ {amount}", font=card_font, text_color="white")
-    label.pack(anchor="w", padx=10)
-    return label  # ✅ Return for updating later
+# # === Header Card Creator ===
+# def create_card(parent, title, amount, color):
+#     card = ctk.CTkFrame(parent, fg_color=color, width=250, height=80, corner_radius=10)
+#     card.pack(side="left", padx=15)
+#     ctk.CTkLabel(card, text=title, font=card_font, text_color="white").pack(anchor="w", padx=10, pady=5)
+#     label = ctk.CTkLabel(card, text=f"₹ {amount}", font=card_font, text_color="white")
+#     label.pack(anchor="w", padx=10)
+#     return label  # ✅ Return for updating later
 
 # === Header Card Widgets (only once) ===
-total_balance_label = create_card(header, "Total Balance", "0", "#045B27")       # Dark green
-monthly_expense_label = create_card(header, "Monthly Expenses", "0", "#D64545")  # Red
-savings_label = create_card(header, "Savings", "0", "#06923E")                   # Primary green
+# total_balance_label = create_card(header, "Total Balance", "0", "#045B27")       # Dark green
+# monthly_expense_label = create_card(header, "Monthly Expenses", "0", "#D64545")  # Red
+# savings_label = create_card(header, "Savings", "0", "#06923E")                   # Primary green
 
-# === Graph Section (Dynamic) ===
-chart_area = ctk.CTkFrame(root, fg_color="#D3ECCD")
-chart_area.pack(fill="both", expand=True, padx=20, pady=10)
+# # === Graph Section (Dynamic) ===
+# chart_area = ctk.CTkFrame(root, fg_color="#D3ECCD")
+# chart_area.pack(fill="both", expand=True, padx=20, pady=10)
 
 # Line Graph - Financial Growth
 fig1 = Figure(figsize=(5, 3), dpi=100)
