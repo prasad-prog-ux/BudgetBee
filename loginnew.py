@@ -4,7 +4,6 @@ from tkinter import messagebox
 import subprocess
 import sys
 from pymongo import MongoClient
-
 import os
 
 # === MongoDB Connection ===
@@ -52,20 +51,21 @@ header_strip.place(x=0, y=0)
 title = ctk.CTkLabel(login_box, text="Sign In", font=my_font_label1, text_color="#06923E")
 title.place(x=20, y=20)
 
-# === Login Fields ===
+# === Login Fields with Fix (text visible while typing) ===
 entry_email = ctk.CTkEntry(login_box, font=my_font_label2, placeholder_text="📧 Email", width=350, height=40,
-                            fg_color="white", border_color="#06923E", corner_radius=10)
+                            fg_color="white", text_color="black",  # ✅ fix
+                            border_color="#06923E", corner_radius=10)
 entry_email.place(x=20, y=80)
 
 entry_password = ctk.CTkEntry(login_box, font=my_font_label2, placeholder_text="🔒 Password", width=350, height=40,
-                               fg_color="white", border_color="#06923E", corner_radius=10, show="*")
+                               fg_color="white", text_color="black",  # ✅ fix
+                               border_color="#06923E", corner_radius=10, show="*")
 entry_password.place(x=20, y=135)
 
 info = ctk.CTkLabel(login_box, text="Minimum 6 characters", font=my_font_label2, text_color="gray")
 info.place(x=20, y=175)
 
 # === Login Logic ===
-
 def login_user():
     email = entry_email.get().strip()
     password = entry_password.get().strip()
@@ -81,12 +81,10 @@ def login_user():
 
         # ✅ Open dashboard.py properly using sys.executable and without CMD window
         subprocess.Popen(
-            [sys.executable, os.path.abspath("dashboard.py"), email],
-              # 👈 hides CMD window
+            [sys.executable, os.path.abspath("dashboard.py"), email]
         )
     else:
         messagebox.showerror("Login Failed", "Invalid email or password.")
-
 
 # === Login Button ===
 login_btn = ctk.CTkButton(login_box, text="🔓 Login Now", font=my_font_label2, height=40, width=350,
@@ -103,7 +101,7 @@ switch_label.place(x=20, y=290)
 
 def open_signup():
     login.destroy()
-    subprocess.Popen([sys.executable, "signup.py"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+    subprocess.Popen([sys.executable, "signup.py"] )
 
 signup_btn = ctk.CTkButton(login_box, text="Sign Up →", font=my_font_button, height=30, width=120,
                             text_color="#06923E", fg_color="white", hover_color="#eeeeee", command=open_signup)

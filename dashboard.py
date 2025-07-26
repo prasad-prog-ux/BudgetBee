@@ -328,16 +328,26 @@ def open_emergency_fund():
 
                 # Save to MongoDB
                 dashboard_col.update_one(
-                    {"email": user_email},
-                    {"$set": {
-                        "funds": {
-                            "target": target,
-                            "saved": saved,
-                            "months": months
-                        }
-                    }},
-                    upsert=True
-                )
+    {"email": user_email},
+    {
+        "$set": {"funds": {
+            "saved": saved,
+            "target": target,
+            "months": months
+        }},
+        "$push": {
+            "history": {
+                "amount": saved,
+                "category": "Emergency Fund",
+                "date": datetime.now().strftime("%Y-%m-%d")
+            }
+        }
+    },
+    upsert=True
+)
+
+                   
+                
                 refresh_dashboard()
                 
 
@@ -809,13 +819,23 @@ def open_bill_tracker():
 
             bills.append(new_bill)
 
+            # ✅ Update subscriptions and PUSH to history for Category Breakdown
             dashboard_col.update_one(
                 {"email": user_email},
-                {"$set": {"subscriptions": bills}}
+                {
+                    "$set": {"subscriptions": bills},
+                    "$push": {
+                        "history": {
+                            "amount": amt,
+                            "category": "Bills & Subscriptions",
+                            "date": datetime.now().strftime("%Y-%m-%d")
+                        }
+                    }
+                }
             )
 
             update_list()
-            refresh_dashboard()
+            refresh_dashboard()  # ✅ Triggers pie chart update too
 
             days_left = (due_date - date.today()).days
             if days_left == 0:
@@ -824,7 +844,7 @@ def open_bill_tracker():
                 messagebox.showinfo("Upcoming Bill", f" '{name}' due in {days_left} day(s).", parent=bill_win)
 
         except ValueError:
-            messagebox.showerror("Invalid Input", " Enter valid amount & date (DD-MM-YYYY)", parent=bill_win)
+            messagebox.showerror("Invalid Input", "Enter valid amount & date (DD-MM-YYYY)", parent=bill_win)
 
     def delete_bill(bill):
         bills.remove(bill)
@@ -863,14 +883,16 @@ def open_bill_tracker():
             messagebox.showerror("Export Error", str(e), parent=bill_win)
 
     # Buttons
-    ctk.CTkButton(bill_win, text="Add Bill", font=text_font, command=add_bill,
-                  fg_color="#06923E", hover_color="#045B27", text_color="#FFFFFF").pack(pady=5)
+    add_btn = ctk.CTkButton(bill_win, text="Add Bill", font=text_font, fg_color="#06923E",
+                            hover_color="#045B27", command=add_bill)
+    add_btn.pack(pady=5)
 
-    ctk.CTkButton(bill_win, text="Export CSV", font=text_font, command=export_csv,
-                  fg_color="#06923E", hover_color="#045B27", text_color="#FFFFFF").pack(pady=5)
+    export_btn = ctk.CTkButton(bill_win, text="Export CSV", font=text_font, fg_color="#FFA500",
+                               hover_color="#CC8400", command=export_csv)
+    export_btn.pack(pady=5)
 
     update_list()
-    
+
 
 def open_ai_financial_advisor():
     chat_win = ctk.CTkToplevel()

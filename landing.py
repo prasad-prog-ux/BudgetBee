@@ -13,7 +13,7 @@ NEWS_API_KEY = "cdf42d910fc7411c8b80b187c4fc0431"
 app = ctk.CTk()
 app.title("SmartFinance Landing Page")
 app.geometry("1280x720")
-app.resizable(False, False)
+# app.resizable(False, False)
 
 bg = ctk.CTkFrame(app, fg_color="#D3ECCD")
 bg.pack(fill="both", expand=True)
